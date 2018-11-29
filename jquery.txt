@@ -1,0 +1,571 @@
+第一章 认识jQuery
+
+jQuery强调的理念是写得少，做得多（write less，do more），其具有链式操作方式、隐式迭代、行为层和结构层的分离等诸多优点。
+获取jQuery的最新版本：http://jquery.com/
+
+1、默认情况下jQuery用$作为自身的快捷方式，并且以下两种形式等价：
+
+复制代码
+1 $(document).ready(function(){
+2     //代码
+3 });
+4 相当于
+5 $(function(){
+6     //代码
+7 });
+复制代码
+2、jQuery对象和DOM对象的相互转换
+
+（1）、jQuery对象转换成DOM对象
+
+jQuery提供了两种方法将一个jQuery对象转换成DOM对象，即[index]和get(index)。
+
+1 var $ck = $("#ck");//jQuery对象
+2 var ck= $ck[0];//或者var ck= $ck.get(0);
+3 alert(ck.checked);//检测这个checkbox是否被选中
+（2）、DOM对象转换成jQuery对象
+
+只需要使用$()把DOM对象包装起来，就可以获得一个jQuery对象了。
+
+1 var ck= document.getElementById("ck");//DOM对象
+2 var $ck = $(ck);
+第二章 jQuery选择器
+
+复制代码
+1 //普通js判断获得元素是否存在
+2 if(document.getElementById("mytt")){
+3     //do something
+4 }
+5
+6 //juery判断获得元素是否存在
+7 if($("#mytt").length > 0){
+8     //do something
+9 }
+复制代码
+1 //如果mytt元素不存在，则页面出现异常
+2 document.getElementById("mytt").style.color = "red";
+3
+4 //即使页面没有名称为mytt的元素，也不会报错，它是一个jQuery对象
+5 $("#mytt").css("color","red");
+常用选择器
+
+1、基本选择器：
+
+1 //注意：基本选择器中有id选择器，但是没有name选择器
+2 $("#mytt") //根据给定的id选择匹配的元素，此处是选取id为mytt的元素，返回：单个元素
+3 $(".myttClass") //根据给定的样式名称选择匹配的元素，此处是选取所有class为myttClass的元素，返回：集合元素
+4 $("p") //根据给定的元素名称选择匹配的元素，此处是选取所有的<p>元素，返回：集合元素
+5 $("#mytt,.myttClass,p") //根据给定的规则选择匹配的元素，此处是选取id为mytt的元素、class为myttClass的元素和<p>元素，返回：集合元素
+6 $("*") //选择页面所有元素，返回：集合元素
+2、层次选择器：
+
+1 $("div span") //选择所有<div>元素下的所有<span>元素（即所有后代元素，包括儿子和孙子等层的），返回：集合元素
+2 $("div>span") //选择所有<div>元素下的<span>子元素（仅子元素），返回：集合元素
+3 $(".myttClass+div") //选择class样式名称为myttClass的下一个<div>元素（即紧接在myttClass元素后的同辈元素），等价于$(".myttClass").next("div")，返回：集合元素
+4 $(".myttClass~div") //选择样式名称为myttClass之后的所有<div>元素（myttClass元素之后的同辈元素），等价于 $(".myttClass").nextAll("div")，返回：集合元素
+5 //注意：$(".myttClass").siblings("div") //选择样式名称为myttClass的元素的所有同辈<div>元素（无论前后），返回集合元素
+3、过滤选择器
+
+（1）、基本过滤选择器
+
+复制代码
+ 1 //注意：索引index从0开始
+ 2 $("div:first") //选择所有<div>元素中的第一个<div>元素，返回：单个元素
+ 3 $("div:last") //选择所有<div>元素中的最后一个<div>元素，返回：单个元素
+ 4 $("div:not(.myttClass)") //选择所有样式不包括myttClass的<div>元素，返回：集合元素
+ 5 $("div:even") //选择所有索引是偶数的<div>元素，返回：集合元素
+ 6 $("div:odd") //选择所有索引是奇数的<div>元素，返回：集合元素
+ 7 $("div:eq(index)") //选择索引等于index的<div>元素，eq为equals的缩写，返回：单个元素
+ 8 $("div:gt(index)") //选择所有索引大于index的<div>元素，gt为great than的缩写，返回：集合元素
+ 9 $("div:lt(index)") //选择所有索引小于index的<div>元素，lt为less than的缩写，返回：集合元素
+10 $(":header") //选择所有标题元素（如h1,h2,h3等），返回：集合元素
+11 $("div:animated") //选择所有正在执行动画的<div>元素，返回：集合元素
+12 $(":focus") //选择当前获取焦点的元素，返回：集合元素
+复制代码
+（2）、内容过滤选择器
+
+1 $("div:contains('我')") //选择所有文本内容包含"我"的<div>元素，返回：集合元素
+2 $("div:empty") //选择所有不包含子元素或者文本的<div>空元素，返回：集合元素
+3 $("div:has(p)") //选择所有含有匹配子元素<p>的<div>元素，返回：集合元素
+4 $("div:parent") //选择所有含有子元素或者文本的<div>元素，返回：集合元素
+（3）、可见性选择器
+
+1 $(":hidden") //选择所有不可见的元素（如：<input type="hidden"/>、<div style="display:none;">和<div style="visibility:none">等元素），返回：集合元素
+2 $(":visible") //选择所有可见的元素，返回：集合元素
+（4）、属性过滤选择器
+
+复制代码
+1 $("[id]") //选择所有含有id属性的元素，返回：集合元素
+2 $("[class=myttClass]") //选择所有class属性值是myttClass的元素，返回：集合元素
+3 $("[class!=myClass]") //选择所有class属性值不是myClass的元素，注意：没有title属性的元素也会被选取，返回：集合元素
+4 $("[title^=tt]") //选择所有title属性值以tt开始的元素，返回：集合元素
+5 $("[title$=tt]") //选择所有title属性值以tt结束的元素，返回：集合元素
+6 $("[title*=tt]") //选择所有title属性值含有tt的元素，返回：集合元素
+7 $('[title|="tt"]') //选择所有title属性值等于tt或以tt为前缀（该字符串后跟一个连字符'-'）的元素，返回：集合元素
+8 $('[title~="tt"]') //选择所有title属性值用空格分割的值中包含字符tt的元素，返回：集合元素
+9 $("div[id][class=myttClass]") //选择所有含有id属性的并且class属性值是myttClass的元素，返回：集合元素
+复制代码
+（5）、子元素过滤选择器
+
+1 //index从1开始
+2 $(":nth-child(index/even/odd)") //选择每个父元素下的第index/偶数/奇数个子元素，返回：集合元素
+3 $(":first-child") //选择每个父元素下的第一个子元素，返回：集合元素
+4 $(":last-child") //选择每个父元素下的最后一个子元素，返回：集合元素
+5 $("ul li:only-child") //在<ul>元素中选择只有一个<li>元素的子元素，返回：集合元素
+（6）、表单对象属性选择器
+
+1 $("#myttForm:enabled") //选择id属性为myttForm表单内的所有可用元素，返回：集合元素
+2 $("#myttForm:disabled") //选择id属性为myttForm表单内的所有不可用元素，返回：集合元素
+3 $("input:checked") //选择所有被选中的<input>元素（单选框、复选框），返回：集合元素
+4 $("select:selected") //所有被选中的选项元素（下拉列表），返回：集合元素
+4、表单选择器
+
+复制代码
+ 1 $(":input") //选择所有<input>、<textarea>、<select>和<button>元素，返回：集合元素
+ 2 $(":text") //选择所有单行文本框元素，返回：集合元素
+ 3 $(":password") //选择所有密码框元素，返回：集合元素
+ 4 $(":radio") //选择所有单选框元素，返回：集合元素
+ 5 $(":checkbox") //选择所有复选框元素，返回：集合元素
+ 6 $(":submit") //选择所有提交按钮元素，返回：集合元素
+ 7 $(":image") //选择所有图片按钮元素，返回：集合元素
+ 8 $(":reset") //选择所有重置按钮元素，返回：集合元素
+ 9 $(":button") //选择所有按钮元素，返回：集合元素
+10 $(":file") //选择所有上传域元素，返回：集合元素
+11 $(":hidden") //选择所有不可见域元素，返回：集合元素
+复制代码
+注意：
+
+　　$(":input")和$("input")是不同的选择器，$(":input")是表单选择器可以选择<input>、<textarea>、<select>和<button>元素，而$("input")是标签选择器，只能匹配选择出<input>标签元素。
+　　上面说到了，有id选择器，但是没有name选择器，此处可以使用属性选择器来表示$("[name=mytt]")来获取name="mytt"的元素。
+
+第三章 jQuery中的DOM操作
+
+1 <p title="choose your favourite fruit" >你最喜欢的水果是?</p>
+2 <ul>
+3     <li title='apple'>苹果</li>
+4     <li title='orange'>橘子</li>
+5     <li title='pinapple'>菠萝</li>
+6 </ul>
+1、查找节点
+
+（1）、查找元素节点
+
+1 //使用上面介绍的jQuery选择器来完成查找元素
+2 var $li = $("ul li:eq(1)");   // 获取第二个<li>元素节点
+3 var li_txt =  $li.text();       // 输出第二个<li>元素节点的text
+4 alert(li_txt);//得到橘子
+（2）、查找属性节点
+
+1 var $para = $("p");//获取<p>节点
+2 var p_txt = $para.attr("title");//获的<p>元素节点属性title值
+3 alert(p_txt);//得到"choose your favourite fruit"
+2、创建节点
+
+1 var $li_1 = $("<li title='banana'>香蕉</li>");//创建一个<li>元素,包括元素节点，文本节点和属性节点,其中title='banana'就是创建的属性节点
+2 var $li_2 = $("<li title='pear'>雪梨</li>");//创建一个<li>元素，包括元素节点,文本节点和属性节点，其中title='pear' 就是创建的属性节点
+3 var $parent = $("ul");//获取<ul>节点。<li>的父节点
+4 $parent.append($li_1);//添加到<ul>节点中，使之能在网页中显示
+5 $parent.append($li_2);//等价于：$parent.append($li_1).append($li_2);
+3、插入节点
+
+1 $("p").append("<b>grape</b>");//结果为<p title="choose your favourite fruit" >你最喜欢的水果是?<b>grape</b></p>
+4、删除节点
+
+1 //remove()方法的返回值是一个指向已被删除的节点的引用
+2 var $li = $("ul li:eq(1)").remove(); //获取第二个<li>元素节点后，将它从网页中删除
+3 $li.appendTo("ul");//把刚才删除的节点又重新添加到<ul>元素里
+5、复制节点
+
+1 //使用clone()方法
+2 $(this).clone().appendTo("ul"); //复制当前点击的节点，并将它追加到<ul>元素
+3 $(this).clone(true).appendTo("ul"); //注意参数true，复制元素的同事复制元素中所绑定的事件
+6、替换节点
+
+1 //replaceWith()和replaceAll()方法
+2 $("p").replaceWith("<strong>你最不喜欢的水果是?</strong>");
+3 //同样的实现：
+4 $("<strong>你最不喜欢的水果是?</strong>").replaceAll("p");
+7、包裹节点
+
+1 //使用wrap()方法
+2 $("strong").wrap("<b></b>");//用<b>元素把<strong>元素包裹起来。即<b><p title="choose your favourite fruit" >你最喜欢的水果是?</p></b>
+8、属性操作
+
+复制代码
+ 1 //使用attr()方法来获取和设置元素属性
+ 2 //设置<p>元素的属性'title'
+ 3 $("p").attr("title","choose");
+ 4
+ 5 //获取<p>元素的属性'title'
+ 6 alert( $("p").attr("title"));
+ 7
+ 8 //使用removeAttr()方法来删除元素的属性
+ 9 //删除<p>元素的属性'title'
+10 $("p").removeAttr("title");
+复制代码
+9、样式操作
+
+此处获取和修改的是css样式是class属性。
+
+复制代码
+ 1 //1.使用attr()方法来获取样式和设置样式
+ 2 $("p").attr("class","hign");//设置<p>元素的class
+ 3 alert( $("p").attr("class"));//获取<p>元素的'class'
+ 4
+ 5 //2.使用addClass()方法来追加样式
+ 6 $("p").addClass("another");//给<p>元素追加'another'样式类
+ 7
+ 8 //3.使用removeClass()方法来移除样式
+ 9 $("p").removeClass()("high another");//使用空格来删除多个样式
+10
+11 //使用toggle()方法来控制行为上的重复切换
+12 $toggleBtn.toggle(function(){
+13     //显示元素
+14 },function(){
+15     //隐藏元素
+16 })
+17
+18 //4.toggleClass()方法来控制样式上的重复切换
+19 $("p").toggleClass("another");//重复切换类名"another"
+20
+21 //5.hasClass()判断是否含有某个样式
+22 $("p").hasClass("another");
+复制代码
+10、设置和获取HTML、文本和值
+
+复制代码
+ 1 //1.html()方法
+ 2 alert($("p").html());//获取<p>元素的HTML代码
+ 3 $("p").html("<strong>你最喜欢的水果是?</strong>");//设置<p>元素的HTML代码
+ 4
+ 5 //2.text()方法
+ 6 alert($("p").text());//获取<p>元素的文本
+ 7 $("p").text("你最喜欢的水果是?");//设置<p>元素的文本
+ 8
+ 9 //3.val()方法
+10 alert($(this).val());//获取按钮的value值
+11 $(this).val("我被点击了!");//设置按钮的value值
+12
+13 //focus()方法相当于js中的onfocus()方法，blur()方法相当与js中的onblur()方法
+14 //defaultValue属性包含该表单元素的初始值
+复制代码
+11、遍历节点
+
+children()方法用于取得匹配元素的子元素集合。
+next()方法取得匹配元素后面紧邻的同辈元素。
+prev()方法取得匹配元素前面紧邻的同辈元素。
+siblings()方法取得匹配元素前后所有的同辈元素。
+
+12、CSS-DOM操作
+
+此处获取和修改的是css样式是style属性。
+
+主要有css()方法、width()方法、height()方法、offset()方法、position()方法、scollTop()和scroLeft()方法等。
+
+1 //此处获取和修改的是css样式是style属性
+2 //使用css()方法获取或者设置元素的样式属性
+3 alert($("p").css("color"));//获取<p>元素的color
+4 $("p").css("color","red");//设置<p>元素的color
+第四章 jQuery中的事件和动画
+
+jQuery中的事件
+
+1、加载DOM
+
+复制代码
+1 //jQuery代码：
+2 $(window).load(function(){
+3     //编写代码
+4 })
+5 //等价于JavaScript代码：
+6 window.onload=function(){
+7     //编写代码
+8 }
+复制代码
+复制代码
+1 $(document).reday(function(){
+2     //编写代码
+3 })
+4 //等价于
+5 $(function(){
+6     //编写代码
+7 })
+复制代码
+2、事件绑定
+
+在文档装在完成后，如果打算为元素绑定事件来完成操作，则可以使用bind()方法来对匹配元素进行特定事件的绑定，bind()方法的调用格式为：
+
+bind(type [, data], fn);
+
+复制代码
+ 1 $(function(){
+ 2     $("#panel h5.head").bind("click",function(){
+ 3         $(this).next().show();
+ 4     })
+ 5 })
+ 6 //可以简写为：
+ 7 $(function(){
+ 8     $("#panel h5.head").click(function(){
+ 9          $(this).next().show();
+10     })
+11 })
+复制代码
+3、合成事件
+
+jQuery有两个合成事件：hover()方法和toggle()方法。
+
+hover()方法用于模拟光标悬停事件，语法结构为hover(enter,leave)，当光标移动到元素上是，会触发指定的第1个函数（enter）；当光标移出这个元素时，会触发指定的第2个函数（leave）。
+
+复制代码
+1 $(function(){
+2     $("#panel h5.head").hover(function(){
+3         $(this).next().show();
+4     },function(){
+5         $(this).next().hide();
+6     })
+7 })
+复制代码
+toggle()方法用于模拟鼠标连续单击事件，语法格式为toggle(fn1,fn2,...fnN)，每次单击元素，都会依次执行fn。
+
+复制代码
+1 $(function(){
+2     $("#panel h5.head").toggle(function(){
+3         $(this).addClass("highlight");
+4         $(this).next().show();
+5     },function(){
+6         $(this).removeClass("highlight");
+7         $(this).next().hide();
+8     });
+9 })
+复制代码
+4、事件冒泡
+
+event.stopPropagation()方法停止事件冒泡；
+
+event.preventDefault()方法阻止默认行为；
+
+5、事件对象的属性
+
+event.type可以获取到事件的类型；
+
+event.stopPropagation()方法停止事件冒泡；
+
+event.preventDefault()方法阻止默认行为；
+
+event.target获取到触发事件的元素；
+
+event.relatedTarget获取到相关元素；
+
+event.pageX和event.pageY获取到光标相对于页面的x坐标和y坐标；
+
+event.which获取鼠标单击时的左、中、右键；
+
+event.metaKey获取<ctrl>按键；
+
+6、移除事件
+
+使用unbind([type],[data])方法
+
+复制代码
+1 //移除click中的所有事件
+2 $('#delAll').click(function(){
+3     $('#btn').unbind("click");//移除click中的所有事件
+4 });
+5
+6 //移除click中的myFun2事件
+7 $('#delTwo').click(function(){
+8     $('#btn').unbind("click",myFun2);//移除click中的myFun2事件
+9 });
+复制代码
+7、模拟操作
+
+trigger()方法完成模拟操作
+
+1 $('#btn').trigger("click");//模拟单击操作
+2 //可简写为
+3 $('#btn').click();
+jQuery中的动画
+
+1、show()方法和hide()方法
+
+show()方法会将元素的display样式改为"block"或者"inline"，hide()方法会将元素的display样式改为"none"。方法中可以带参数来控制显示或者隐藏的速度。
+
+复制代码
+1 $(function(){
+2     $("#panel h5.head").toggle(function(){
+3         $(this).next().hide();
+4     },function(){
+5         $(this).next().show();
+6     })
+7 })
+复制代码
+2、fadeIn()方法和fadeOut()方法
+
+fadeIn()方法和fadeOut()方法改变元素的不透明度，即淡入淡出效果。
+
+复制代码
+1 $(function(){
+2     $("#panel h5.head").toggle(function(){
+3         $(this).next().fadeOut();
+4     },function(){
+5         $(this).next().fadeIn();
+6     })
+7 })
+复制代码
+3、slideUp()方法和slideDown()方法
+
+slideUp()方法和slideDown()方法会改变元素的高度，slideUp()方法由上到下缩短隐藏，slideDown()由上至下延伸显示。
+
+复制代码
+1 $(function(){
+2     $("#panel h5.head").toggle(function(){
+3         $(this).next().slideUp();
+4     },function(){
+5         $(this).next().slideDown();
+6     })
+7 })
+复制代码
+4、自定义动画animate()
+
+1 $(function(){
+2     $("#panel").click(function(){
+3         $(this).animate({left: "500px"}, 3000);
+4     })
+5 })
+第五章 jQuery对表单、表格的操作及更多应用
+
+复制代码
+ 1 //复选框全选或不全选
+ 2 $("#CheckedAll").click(function(){
+ 3     //所有checkbox跟着全选的checkbox走
+ 4     $('[name=items]:checkbox').attr("checked", this.checked );
+ 5 });
+ 6
+ 7 $('[name=items]:checkbox').click(function(){
+ 8     //定义一个临时变量，避免重复使用同一个选择器选择页面中的元素，提升程序效率。
+ 9     var $tmp=$('[name=items]:checkbox');
+10     //用filter方法筛选出选中的复选框。并直接给CheckedAll赋值。
+11     $('#CheckedAll').attr('checked',$tmp.length==$tmp.filter(':checked').length);
+12 });
+13
+14 //表格奇偶行才一共不同的样式
+15 $("tr:odd").addClass("oddTr"); //给奇数行添加oddTr样式
+16 $("tr:even").addClass("evenTr"); //给偶数行添加evenTr样式
+复制代码
+第六章 jQuery与Ajax的应用
+
+Ajax的核心是XMLHttpRequest对象，它是Ajax实现的关键——发送异步请求、接收相应即执行回调都是通过他来完成的。
+
+jQuery对Ajax操作进行了封装，在jQuery中$.ajax()方法属于最底层的方法，第2层是load()、$.get()和$.post()方法，第3层是$.getScript()和$.getJSON()方法。
+
+load()方法是jQuery中最为简单和常用的jQuery方法，能载入远程HTML代码和插入DOM中，一般用于获取静态的数据文件，语法格式为：load(url [,data] [,callback])。
+
+复制代码
+ 1 //无参数传递，则是get方式；有参数传递，则是post方式
+ 2 $(function(){
+ 3     $("#send").click(function(){
+ 4         $("#resText").load("test.html",function (responseText, textStatus, XMLHttpRequest){
+ 5             alert( $(this).html() );//在这里this指向的是当前的DOM对象，即 $("#iptText")[0]
+ 6             alert(responseText);//请求返回的内容
+ 7             alert(textStatus);//请求状态：success，error
+ 8             alert(XMLHttpRequest);//XMLHttpRequest对象
+ 9         });
+10     })
+11 })
+复制代码
+$.get()方法和$.post()方法
+
+$.get()方法的语法结构为：$.get(url [,data] [,callback] [,type])，$.post()方法结构与其类似，只是提交方式不一样。
+其中url表示被加载的数据的url地址；data表示发送到服务器的数据的键/值对象；callback表示当数据被加载时，所执行的函数；type表示被返回的数据的类型（html，xml，json，text等）。
+
+form表单中的GET与POST的区别：
+GET请求的数据会附在URL地址之后（就是把数据放置在HTTP协议头中），以?分割URL和传输数据，参数之间以&相连，而且提交的数据最多只能是2KB，而且GET方式提交的数据会给浏览器缓存起来，从浏览器的历史记录中可以找到，所以安全性较差；
+POST请求会把提交的数据放置在HTTP包的包体中，不会附着在地址栏中，提交的数据理论上没有大小限制，所以POST的安全性要比GET高。
+
+复制代码
+ 1 $(function(){
+ 2     $("#send").click(function(){
+ 3         $.get("get3.php", {
+ 4             username :  $("#username").val() ,
+ 5             content :  $("#content").val()
+ 6         }, function (data, textStatus){
+ 7             var username = data.username;
+ 8             var content = data.content;
+ 9             var txtHtml = "<div class='comment'><h6>"+username+":</h6><p class='para'>"+content+"</p></div>";
+10             $("#resText").html(txtHtml); // 把返回的数据添加到页面上
+11         },"json");
+12     })
+13 })
+复制代码
+
+
+复制代码
+ 1 $(function(){
+ 2     $("#send").click(function(){
+ 3         $.post("get3.php", {
+ 4             username :  $("#username").val() ,
+ 5             content :  $("#content").val()
+ 6         }, function (data, textStatus){
+ 7             var username = data.username;
+ 8             var content = data.content;
+ 9             var txtHtml = "<div class='comment'><h6>"+username+":</h6><p class='para'>"+content+"</p></div>";
+10             $("#resText").html(txtHtml); // 把返回的数据添加到页面上
+11         },"json");
+12     })
+13 })
+复制代码
+$.getScript()方法和$.getJSON()方法
+
+$.getScript(url[,data][,callback])方法，相当于$.get()方法的Script版本，相当于指定type参数为"script"；$.getJson(url[,data][,callback])方法，相当于$.get()方法的Json版本，相当于指定type参数为"json"；
+
+复制代码
+1 $(function(){
+2     $.getScript('jquery.color.js',function(){
+3         $("<p>加载JavaScript完毕</p>").appendTo("body");
+4         $("#go").click(function(){
+5             $(".block").animate( { backgroundColor: 'pink' }, 1000)
+6                        .animate( { backgroundColor: 'blue' }, 1000);
+7         });
+8     });
+9 })
+复制代码
+
+
+复制代码
+ 1 $(function(){
+ 2     $('#send').click(function() {
+ 3         $.getJSON('test.json', function(data) {
+ 4             $('#resText').empty();
+ 5             var html = '';
+ 6             $.each( data  , function(commentIndex, comment) {
+ 7                 html += '<div class="comment"><h6>' + comment['username'] + ':</h6><p class="para">' + comment['content'] + '</p></div>';
+ 8             })
+ 9         $('#resText').html(html);
+10         })
+11     })
+12 })
+复制代码
+$.ajax()方法
+
+$.ajax()方法的语法格式为：$.ajax(options)，参数以key/value的形式存在。
+其中url表示发送请求的地址；dataType表示预期从服务器返回的数据类型；type表示请求方式，默认为GET；data表示发送到服务器的数据；async表示发送同步/异步请求，默认为true，表示异步；success表示请求成功后调用的回调函数；error表示请求失败时调用的回调函数。
+注意：同步请求将锁住浏览器，用户的其他操作必须等待请求完成后才可以继续执行。
+
+复制代码
+ 1 $(function(){
+ 2     $('#send').click(function() {
+ 3         $.ajax({
+ 4             type: "GET",
+ 5             url: "http://api.flickr.com/services/feeds/photos_public.gne?tags=car&tagmode=any&format=json&jsoncallback=?",
+ 6             dataType: "jsonp",
+ 7             success : function(data){
+ 8                 $.each(data.items, function( i,item ){
+ 9                     $("<img class='para'/> ").attr("src", item.media.m ).appendTo("#resText");
+10                     if ( i == 3 ) {
+11                         return false;
+12                     }
+13                 });
+14             }
+15         });
+16     });
+17 })
